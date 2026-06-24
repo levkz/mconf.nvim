@@ -99,7 +99,7 @@ do
   vim.g.maplocalleader = ' '
 
   -- Set to true if you have a Nerd Font installed and selected in the terminal
-  vim.g.have_nerd_font = false
+  vim.g.have_nerd_font = true
 
   -- [[ Setting options ]]
   --  See `:help vim.o`
@@ -171,6 +171,12 @@ do
   -- instead raise a dialog asking if you wish to save the current file(s)
   -- See `:help 'confirm'`
   vim.o.confirm = true
+
+  -- set tab size
+  vim.opt.tabstop = 4 -- Number of visual spaces a literal Tab counts for
+  vim.opt.shiftwidth = 4 -- Number of spaces used for autoindentation
+  vim.opt.softtabstop = 4 -- Number of spaces a Tab counts for while editing
+  vim.opt.expandtab = true -- Convert hit Tab keys into space characters
 end
 
 -- ============================================================
@@ -697,6 +703,26 @@ do
     -- pyright = {},
     -- rust_analyzer = {},
     --
+    --  -- JS/TS
+    ts_ls = {},
+    eslint = {},
+
+    -- Rust
+    rust_analyzer = {
+      settings = {
+        ['rust-analyzer'] = {
+          check = {
+            command = 'clippy',
+          },
+        },
+      },
+    },
+
+    -- Python
+    pyright = {},
+
+    -- Go
+    gopls = {},
     -- Some languages (like typescript) have entire language plugins that can be useful:
     --    https://github.com/pmizio/typescript-tools.nvim
     --
@@ -782,8 +808,22 @@ do
     format_on_save = function(bufnr)
       -- You can specify filetypes to autoformat on save here:
       local enabled_filetypes = {
-        -- lua = true,
-        -- python = true,
+        lua = true,
+        javascriptreact = true,
+        typescript = true,
+        typescriptreact = true,
+
+        json = true,
+        jsonc = true,
+        css = true,
+        scss = true,
+        html = true,
+        markdown = true,
+
+        -- Rust/Python/Go
+        rust = true,
+        python = true,
+        go = true,
       }
       if enabled_filetypes[vim.bo[bufnr].filetype] then
         return { timeout_ms = 500 }
@@ -796,12 +836,30 @@ do
     },
     -- You can also specify external formatters in here.
     formatters_by_ft = {
-      -- rust = { 'rustfmt' },
       -- Conform can also run multiple formatters sequentially
-      -- python = { "isort", "black" },
       --
       -- You can use 'stop_after_first' to run the first available formatter from the list
-      -- javascript = { "prettierd", "prettier", stop_after_first = true },
+      -- -- JS/TS
+      javascript = { 'prettierd', 'prettier', stop_after_first = true },
+      javascriptreact = { 'prettierd', 'prettier', stop_after_first = true },
+      typescript = { 'prettierd', 'prettier', stop_after_first = true },
+      typescriptreact = { 'prettierd', 'prettier', stop_after_first = true },
+
+      json = { 'prettierd', 'prettier', stop_after_first = true },
+      jsonc = { 'prettierd', 'prettier', stop_after_first = true },
+      css = { 'prettierd', 'prettier', stop_after_first = true },
+      scss = { 'prettierd', 'prettier', stop_after_first = true },
+      html = { 'prettierd', 'prettier', stop_after_first = true },
+      markdown = { 'prettierd', 'prettier', stop_after_first = true },
+
+      -- Rust
+      rust = { 'rustfmt' },
+
+      -- Python
+      python = { 'ruff_format', 'black', stop_after_first = true },
+
+      -- Go
+      go = { 'goimports', 'gofmt', stop_after_first = true },
     },
   }
 
