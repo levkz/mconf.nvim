@@ -157,9 +157,16 @@ do
 
   vim.keymap.set('n', '<leader>tt', vim.cmd.tabnew, { desc = '[t]ab [t]abnew' })
   vim.keymap.set('n', '<leader>tc', vim.cmd.tabclose, { desc = '[t]ab [c]lose' })
+  vim.keymap.set('n', '<leader>tp', vim.cmd.tabp, { desc = '[t]ab [p]rev' })
+  vim.keymap.set('n', '<leader>tn', vim.cmd.tabn, { desc = '[t]ab [n]ext' })
   vim.keymap.set('n', '<leader>t-', function() vim.cmd 'tabmove -' end, { desc = '[t]ab move [-]' })
   vim.keymap.set('n', '<leader>t+', function() vim.cmd 'tabmove +' end, { desc = '[t]ab move [+]' })
   vim.keymap.set('n', '<leader>tO', vim.cmd.tabonly, { desc = '[t]ab [O]nly' })
+  vim.keymap.set('n', '<leader>tf', ':tabfind ', { desc = '[t]ab [f]ind <file>' })
+
+  for i = 1, 9 do
+    vim.keymap.set('n', '<leader>t' .. i, i .. 'gt')
+  end
 
   vim.keymap.set('n', 'ss', vim.cmd.split, { desc = '[s]plit: [s]plit horizontal' })
   vim.keymap.set('n', 'sv', vim.cmd.vsplit, { desc = '[s]plit [v]ertical' })
@@ -278,19 +285,23 @@ do
   -- Useful plugin to show you pending keybinds.
   vim.pack.add { gh 'folke/which-key.nvim' }
   require('which-key').setup {
-    -- Delay between pressing a key and opening which-key (milliseconds)
+    -- delay between pressing a key and opening which-key (milliseconds)
     delay = 0,
     icons = { mappings = vim.g.have_nerd_font },
-    -- Document existing key chains
+    -- document existing key chains
     spec = {
-      { '<leader>s', group = '[S]earch', mode = { 'n', 'v' } },
-      { '<leader>t', group = '[T]oggle' },
-      { '<leader>t', group = '[T]ab' },
-      { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } }, -- Enable gitsigns recommended keymaps first
-      { 'gr', group = 'LSP Actions', mode = { 'n' } },
+      { '<leader>s', group = '[s]earch', mode = { 'n', 'v' } },
+      { '<leader>t', group = '[t]ab' },
+      { '<leader>h', group = 'git [h]unk', mode = { 'n', 'v' } }, -- enable gitsigns recommended keymaps first
+      { 'gr', group = 'lsp actions', mode = { 'n' } },
     },
   }
 
+  local hidden = {}
+  for i = 1, 9 do
+    table.insert(hidden, { '<leader>t' .. i, hidden = true })
+  end
+  require('which-key').add(hidden)
   -- [[ Colorscheme ]]
   -- You can easily change to a different colorscheme.
   -- Change the name of the colorscheme plugin below, and then
