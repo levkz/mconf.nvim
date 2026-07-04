@@ -176,6 +176,9 @@ do
 
   vim.keymap.set('n', '<leader>e', vim.cmd.Explore, { desc = '[e]xplore' })
 
+  vim.keymap.set('v', '>', '>gv', { desc = 'Indent and keep selection' })
+  vim.keymap.set('v', '<', '<gv', { desc = 'Unindent and keep selection' })
+
   -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
   -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
   -- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
@@ -447,7 +450,41 @@ do
   vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
   vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
   vim.keymap.set('n', '<leader>sc', builtin.commands, { desc = '[S]earch [C]ommands' })
-  vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+  vim.keymap.set(
+    'n',
+    '<leader><leader>',
+    function()
+      require('telescope.builtin').buffers {
+        sort_mru = true,
+        ignore_current_buffer = true,
+      }
+    end,
+    { desc = 'Find existing buffers' }
+  )
+
+  -- Harpoon setup
+  vim.pack.add {
+    {
+      src = gh 'ThePrimeagen/harpoon',
+      version = 'harpoon2',
+    },
+  }
+
+  local harpoon = require 'harpoon'
+
+  harpoon:setup()
+
+  vim.keymap.set('n', '<leader>ma', function() harpoon:list():add() end, { desc = '[M]ark [A]dd file' })
+  vim.keymap.set('n', '<leader>md', function() harpoon:list():remove() end, { desc = '[M]ark [D]elete' })
+  vim.keymap.set('n', '<leader>mm', function() harpoon.ui:toggle_quick_menu(harpoon:list()) end, { desc = '[M]ark [M]enu' })
+
+  vim.keymap.set('n', '<leader>mn', function() harpoon:list():next() end, { desc = '[M]ark [N]ext' })
+
+  vim.keymap.set('n', '<leader>mp', function() harpoon:list():prev() end, { desc = '[M]ark [P]revious' })
+
+  for i = 1, 5 do
+    vim.keymap.set('n', '<leader>m' .. i, function() harpoon:list():select(i) end, { desc = 'Harpoon ' .. i })
+  end
 
   -- Add Telescope-based LSP pickers when an LSP attaches to a buffer.
   -- If you later switch picker plugins, this is where to update these mappings.
