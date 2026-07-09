@@ -1,4 +1,8 @@
-do
+require 'utils'
+
+local M = {}
+
+function M.setup()
   -- Here is a more advanced configuration example that passes options to `gitsigns.nvim`
   --
   -- See `:help gitsigns` to understand what each configuration key does.
@@ -14,3 +18,5 @@ do
     },
   }
 end
+
+return M
