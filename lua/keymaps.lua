@@ -100,6 +100,94 @@ function M.set()
     group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
     callback = function() vim.hl.on_yank() end,
   })
+
+  -- Trouble / diagnostics
+
+  vim.keymap.set('n', ']d', function() vim.diagnostic.jump { count = 1, float = true } end, {
+    desc = 'Next diagnostic',
+  })
+
+  vim.keymap.set('n', '[d', function() vim.diagnostic.jump { count = -1, float = true } end, {
+    desc = 'Previous diagnostic',
+  })
+
+  vim.keymap.set('n', '<leader>td', require('custom.plugins.diaz').toggle, {
+    desc = '[T]oggle [D]iagnostic hover',
+  })
+
+  vim.keymap.set('n', '<leader>xx', '<cmd>Trouble diagnostics toggle<CR>', {
+    desc = 'Diagnostics (Trouble)',
+  })
+
+  vim.keymap.set('n', '<leader>xX', '<cmd>Trouble diagnostics toggle filter.buf=0<CR>', {
+    desc = 'Buffer Diagnostics (Trouble)',
+  })
+
+  vim.keymap.set('n', '<leader>cs', '<cmd>Trouble symbols toggle focus=false<CR>', {
+    desc = 'Symbols (Trouble)',
+  })
+
+  vim.keymap.set('n', '<leader>cl', '<cmd>Trouble lsp toggle focus=false win.position=right<CR>', {
+    desc = 'LSP Definitions/References',
+  })
+
+  vim.keymap.set('n', '<leader>xL', '<cmd>Trouble loclist toggle<CR>', {
+    desc = 'Location List',
+  })
+
+  vim.keymap.set('n', '<leader>xQ', '<cmd>Trouble qflist toggle<CR>', {
+    desc = 'Quickfix List',
+  })
+
+  -- Oil
+  vim.keymap.set('n', '<leader>e', require('oil').open, { desc = '[e]xplore' })
+
+  -- Terminal
+  vim.keymap.set('n', '<leader>st', require('terminal').open, { desc = '[s]tart [t]erminal session' })
+
+  -- Telescope
+
+  local builtin = require 'telescope.builtin'
+  vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
+  vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
+  vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
+  vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
+  vim.keymap.set({ 'n', 'v' }, '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
+  vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
+  vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
+  vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
+  vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
+  vim.keymap.set('n', '<leader>sc', builtin.commands, { desc = '[S]earch [C]ommands' })
+  vim.keymap.set('x', '<leader>p', '"_dP', { desc = 'delete and [p]aste while saving the previous last registry' })
+  vim.keymap.set(
+    'n',
+    '<leader><leader>',
+    function()
+      builtin.buffers {
+        sort_mru = true,
+        ignore_current_buffer = true,
+      }
+    end,
+    { desc = 'Find existing buffers' }
+  )
+
+  -- Harpoon
+  local harpoon = require 'harpoon'
+
+  vim.keymap.set('n', '<leader>ma', function() harpoon:list():add() end, { desc = '[M]ark [A]dd file' })
+  vim.keymap.set('n', '<leader>md', function() harpoon:list():remove() end, { desc = '[M]ark [D]elete' })
+  vim.keymap.set('n', '<leader>mm', function() harpoon.ui:toggle_quick_menu(harpoon:list()) end, { desc = '[M]ark [M]enu' })
+
+  vim.keymap.set('n', '<leader>mn', function() harpoon:list():next() end, { desc = '[M]ark [N]ext' })
+
+  vim.keymap.set('n', '<leader>mp', function() harpoon:list():prev() end, { desc = '[M]ark [P]revious' })
+
+  for i = 1, 5 do
+    vim.keymap.set('n', '<leader>m' .. i, function() harpoon:list():select(i) end, { desc = 'Harpoon ' .. i })
+  end
+
+  -- Format
+  vim.keymap.set({ 'n', 'v' }, '<leader>f', function() require('conform').format { async = true } end, { desc = '[F]ormat buffer' })
 end
 
 return M

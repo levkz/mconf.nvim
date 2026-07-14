@@ -2,7 +2,6 @@ require 'utils'
 
 vim.loader.enable()
 require('options').set()
-require('keymaps').set()
 require('plugin-management').setup()
 -- ============================================================
 -- SECTION 4: UI / CORE UX PLUGINS
@@ -25,8 +24,9 @@ do
   vim.pack.add { gh 'NMAC427/guess-indent.nvim' }
   require('guess-indent').setup {}
   require('plugins.oil').setup()
-  -- TODO: create a keymaps.lua and move it there
-  vim.keymap.set('n', '<leader>e', require('oil').open, { desc = '[e]xplore' })
+  require('plugins.trouble').setup()
+  require('custom.plugins.diaz').setup()
+
   require('gitsigns-config').setup()
   -- Useful plugin to show you pending keybinds.
   vim.pack.add { gh 'folke/which-key.nvim' }
@@ -63,7 +63,6 @@ do
   }
 
   require('terminal').setup()
-  vim.keymap.set('n', '<leader>st', require('terminal').open, { desc = '[s]tart [t]erminal session' })
 
   -- Load the colorscheme here.
   -- Like many other themes, this one has different styles, and you could load
@@ -183,31 +182,9 @@ do
   -- Enable Telescope extensions if they are installed
   pcall(require('telescope').load_extension, 'fzf')
   pcall(require('telescope').load_extension, 'ui-select')
+  local builtin = require 'telescope.builtin'
 
   -- See `:help telescope.builtin`
-  local builtin = require 'telescope.builtin'
-  vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
-  vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
-  vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
-  vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
-  vim.keymap.set({ 'n', 'v' }, '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
-  vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
-  vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
-  vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
-  vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
-  vim.keymap.set('n', '<leader>sc', builtin.commands, { desc = '[S]earch [C]ommands' })
-  vim.keymap.set('x', '<leader>p', '"_dP', { desc = 'delete and [p]aste while saving the previous last registry' })
-  vim.keymap.set(
-    'n',
-    '<leader><leader>',
-    function()
-      require('telescope.builtin').buffers {
-        sort_mru = true,
-        ignore_current_buffer = true,
-      }
-    end,
-    { desc = 'Find existing buffers' }
-  )
 
   -- Harpoon setup
   vim.pack.add {
@@ -217,21 +194,7 @@ do
     },
   }
 
-  local harpoon = require 'harpoon'
-
-  harpoon:setup()
-
-  vim.keymap.set('n', '<leader>ma', function() harpoon:list():add() end, { desc = '[M]ark [A]dd file' })
-  vim.keymap.set('n', '<leader>md', function() harpoon:list():remove() end, { desc = '[M]ark [D]elete' })
-  vim.keymap.set('n', '<leader>mm', function() harpoon.ui:toggle_quick_menu(harpoon:list()) end, { desc = '[M]ark [M]enu' })
-
-  vim.keymap.set('n', '<leader>mn', function() harpoon:list():next() end, { desc = '[M]ark [N]ext' })
-
-  vim.keymap.set('n', '<leader>mp', function() harpoon:list():prev() end, { desc = '[M]ark [P]revious' })
-
-  for i = 1, 5 do
-    vim.keymap.set('n', '<leader>m' .. i, function() harpoon:list():select(i) end, { desc = 'Harpoon ' .. i })
-  end
+  require('harpoon'):setup()
 
   -- Add Telescope-based LSP pickers when an LSP attaches to a buffer.
   -- If you later switch picker plugins, this is where to update these mappings.
@@ -442,6 +405,7 @@ do
           if path ~= vim.fn.stdpath 'config' and (vim.uv.fs_stat(path .. '/.luarc.json') or vim.uv.fs_stat(path .. '/.luarc.jsonc')) then return end
         end
 
+        ---@diagnostic disable-next-line: param-type-mismatch
         client.config.settings.Lua = vim.tbl_deep_extend('force', client.config.settings.Lua, {
           runtime = {
             version = 'LuaJIT',
@@ -563,8 +527,6 @@ do
       go = { 'goimports', 'gofmt', stop_after_first = true },
     },
   }
-
-  vim.keymap.set({ 'n', 'v' }, '<leader>f', function() require('conform').format { async = true } end, { desc = '[F]ormat buffer' })
 end
 
 -- ============================================================
@@ -738,5 +700,8 @@ do
   -- require 'custom.plugins'
 end
 
+do
+  require('keymaps').set()
+end
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
