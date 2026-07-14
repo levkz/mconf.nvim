@@ -88,14 +88,6 @@ function M.set()
   vim.opt.shiftwidth = 4 -- Number of spaces used for autoindentation
   vim.opt.softtabstop = 4 -- Number of spaces a Tab counts for while editing
   vim.opt.expandtab = true -- Convert hit Tab keys into space characters
-
-  vim.diagnostic.config {
-    virtual_text = false,
-    signs = true,
-    underline = true,
-    update_in_insert = false,
-    severity_sort = true,
-  }
 end
 
 return M

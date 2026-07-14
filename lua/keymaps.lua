@@ -14,29 +14,27 @@ function M.set()
 
   -- Diagnostic Config & Keymaps
   --  See `:help vim.diagnostic.Opts`
-  vim.diagnostic.config {
-    update_in_insert = false,
-    severity_sort = true,
-    float = { border = 'rounded', source = 'if_many' },
-    underline = { severity = { min = vim.diagnostic.severity.WARN } },
-
-    -- Can switch between these as you prefer
-    virtual_text = true, -- Text shows up at the end of the line
-    virtual_lines = false, -- Text shows up underneath the line, with virtual lines
-
-    -- Auto open the float, so you can easily read the errors when jumping with `[d` and `]d`
-    jump = {
-      on_jump = function(_, bufnr)
-        vim.diagnostic.open_float {
-          bufnr = bufnr,
-          scope = 'cursor',
-          focus = false,
-        }
-      end,
-    },
-  }
-
-  vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+  -- vim.diagnostic.config {
+  --   update_in_insert = false,
+  --   severity_sort = true,
+  --   float = { border = 'rounded', source = 'if_many' },
+  --   underline = { severity = { min = vim.diagnostic.severity.WARN } },
+  --
+  --   -- Can switch between these as you prefer
+  --   virtual_text = false, -- Text shows up at the end of the line
+  --   virtual_lines = false, -- Text shows up underneath the line, with virtual lines
+  --
+  --   -- Auto open the float, so you can easily read the errors when jumping with `[d` and `]d`
+  --   jump = {
+  --     on_jump = function(_, bufnr)
+  --       vim.diagnostic.open_float {
+  --         bufnr = bufnr,
+  --         scope = 'cursor',
+  --         focus = false,
+  --       }
+  --     end,
+  --   },
+  -- }
 
   -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
   -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -102,6 +100,7 @@ function M.set()
   })
 
   -- Trouble / diagnostics
+  vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
   vim.keymap.set('n', ']d', function() vim.diagnostic.jump { count = 1, float = true } end, {
     desc = 'Next diagnostic',
@@ -143,7 +142,7 @@ function M.set()
   vim.keymap.set('n', '<leader>e', require('oil').open, { desc = '[e]xplore' })
 
   -- Terminal
-  vim.keymap.set('n', '<leader>st', require('terminal').open, { desc = '[s]tart [t]erminal session' })
+  vim.keymap.set('n', '<leader>st', require('custom.plugins.terminal').open, { desc = '[s]tart [t]erminal session' })
 
   -- Telescope
 
@@ -188,6 +187,17 @@ function M.set()
 
   -- Format
   vim.keymap.set({ 'n', 'v' }, '<leader>f', function() require('conform').format { async = true } end, { desc = '[F]ormat buffer' })
+
+  -- Git
+  local gs = require 'gitsigns'
+  vim.keymap.set('n', ']h', function() gs.nav_hunk 'next' end, { desc = '<]>Next git[h]unk' })
+  vim.keymap.set('n', '[h', function() gs.nav_hunk 'prev' end, { desc = '<[>Previus git[h]unk' })
+
+  vim.keymap.set('n', '<leader>hs', gs.stage_hunk, { desc = 'git[h]unk [s]tage' })
+  vim.keymap.set('n', '<leader>hr', gs.reset_hunk, { desc = 'git[h]unk [r]eset' })
+  vim.keymap.set('n', '<leader>hp', gs.preview_hunk, { desc = 'git[h]unk [p]review' })
+  vim.keymap.set('n', '<leader>hb', gs.blame_line, { desc = 'git[h]unk [b]lame' })
+  vim.keymap.set('n', '<leader>hd', gs.diffthis, { desc = 'git[h]unk [d]iff' })
 end
 
 return M

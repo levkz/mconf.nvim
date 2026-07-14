@@ -3,6 +3,14 @@ local M = {}
 local diagnostics_hover_enabled = true
 
 function M.setup()
+  vim.diagnostic.config {
+    virtual_text = false,
+    signs = true,
+    underline = true,
+    update_in_insert = false,
+    severity_sort = true,
+  }
+
   vim.api.nvim_create_autocmd('CursorHold', {
     callback = function()
       if not diagnostics_hover_enabled then return end

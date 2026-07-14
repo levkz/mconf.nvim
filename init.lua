@@ -25,7 +25,9 @@ do
   require('guess-indent').setup {}
   require('plugins.oil').setup()
   require('plugins.trouble').setup()
+
   require('custom.plugins.diaz').setup()
+  require('custom.plugins.terminal').setup()
 
   require('gitsigns-config').setup()
   -- Useful plugin to show you pending keybinds.
@@ -55,14 +57,13 @@ do
   --
   -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
   vim.pack.add { gh 'folke/tokyonight.nvim' }
+  vim.pack.add { gh 'nyoom-engineering/oxocarbon.nvim' }
   ---@diagnostic disable-next-line: missing-fields
   require('tokyonight').setup {
     styles = {
       comments = { italic = false }, -- Disable italics in comments
     },
   }
-
-  require('terminal').setup()
 
   -- Load the colorscheme here.
   -- Like many other themes, this one has different styles, and you could load
